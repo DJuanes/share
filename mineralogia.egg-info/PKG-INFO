@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: mineralogia
+Version: 0.1
+Summary: Clasificación automática de perfiles sinteticos.
+Author: Johann Cambra
+Author-email: johann.cambra@ypf.com
+Requires-Python: >=3.9
+Provides-Extra: dev
+Provides-Extra: docs
+Provides-Extra: test

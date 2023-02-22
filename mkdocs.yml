@@ -1,0 +1,28 @@
+site_name: Mineralogía
+site_url: https://coe-mineralogia.com/
+repo_url: https://github.com/DJuanes/coe-mineralogia/
+nav:
+- home: index.md
+- workflows:
+    - main: src/main.md
+- src:
+    - data: src/data.md
+    - evaluate: src/evaluate.md
+    - predict: src/predict.md
+    - train: src/train.md
+    - utils: src/utils.md
+theme:
+  name: material
+  font:
+    text: Roboto
+  palette:
+    primary: blue
+  logo: resources/YPF.svg
+  favicon: resources/YPF.svg
+  features:
+    - navigation.instant
+    - navigation.indexes
+plugins:
+- mkdocstrings
+watch:
+- .  # recargar documentos para cualquier cambio de archivo

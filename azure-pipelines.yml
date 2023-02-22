@@ -1,0 +1,96 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - main
+  paths:
+    exclude:
+    - data
+    - docs
+    - models
+    - notebooks
+      
+pool:
+  name: 'Default_RHEL'
+
+resources:
+  repositories:
+    - repository: TemplatesYPF_Pipelines
+      type: git
+      name: YTEC CoE/TemplatesYPF_Pipelines
+      ref: refs/heads/main
+  
+variables:
+- group: 'Template Secrets'
+- name: venv_name
+  value: 'mineralogia'
+- name: cov_min
+  value: 30
+- name: py_version
+  value: '3.9.13'
+- name: webapp_url
+  value: 'https://oilslick-dev.test.ypftecnologia.com'
+- name: acr
+  value: 'yteczdacrtec001'
+- name: acr_url
+  value: 'yteczdacrtec001.azurecr.io'
+- name: acr_user
+  value: 'yteczdacrtec001'
+- name: proyecto
+  value: 'Mineralogia'
+- name: image_name
+  value: 'mineralogia_api'
+- name: tag_version
+  value: 'latest'
+- name: app_id
+  value: 'b68d5b08-66a3-4adf-9044-9019bdac137a'
+- name: resource_group
+  value: 'teczdrgpcoe004'
+- name: web_app
+  value: 'teczdapsdop009'
+
+name: $(TeamProject)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+stages:
+- stage: SecurityChecks
+  displayName: Python security checkers
+  jobs:
+  - template: SecurityChecks.yml@TemplatesYPF_Pipelines
+    parameters:
+      webapp_url: $(webapp_url)
+      venv_name: $(venv_name)
+
+- stage: CodeQuality
+  displayName: Python code quality
+  jobs:
+  - template: CodeQuality.yml@TemplatesYPF_Pipelines
+    parameters:
+      venv_name: $(venv_name)
+
+- stage: Testing
+  displayName: Python code testing
+  jobs:
+  - template: Testing.yml@TemplatesYPF_Pipelines
+    parameters:
+      cov_min: $(cov_min)
+      venv_name: $(venv_name)
+
+- stage: Container
+  displayName: Build and publish image
+  jobs:
+  - template: Podman.yml@TemplatesYPF_Pipelines
+    parameters:
+      acr: $(acr)
+      acr_url: $(acr_url)
+      acr_user: $(acr_user)
+      acr_pass: $(acr_pass)
+      proyecto: $(proyecto)
+      image_name: $(image_name)
+      tag_version: $(tag_version)
+      app_id: $(app_id)
+      app_pass: $(app_pass)
+      resource_group: $(resource_group)
+      web_app: $(web_app)
+      clean: 'true'
+      desplegar: 'true'

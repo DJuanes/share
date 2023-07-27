@@ -24,7 +24,7 @@ def validate_input() -> bool:
         bool: Si los datos son validos o no
     """
 
-    data_context: DataContext = DataContext(context_root_dir="tests/great_expectations")
+    data_context: DataContext = DataContext(context_root_dir="./tests/great_expectations")
 
     result: CheckpointResult = data_context.run_checkpoint(
         checkpoint_name="novedades_gidi",
@@ -53,6 +53,12 @@ def get_presiones() -> pd.DataFrame:
         os.environ.get("PI_WEB_API_PASSWORD"),
     )
 
+    blob.download_data_from_blob_storage(
+        storage_account_key=config.STORAGE_ACCOUNT_KEY,
+        container_name=config.CONTAINER_NAME,
+        local_fp=config.DATA_INPUT_DIR,
+        blob_name="NOVEDADES_GIDI.CSV",
+    )
     novedades_fp = config.DATA_INPUT_DIR.joinpath("NOVEDADES_GIDI.csv")
     df_novedades = pd.read_csv(novedades_fp)
 
